@@ -5,10 +5,10 @@ profiles:
   - name: dev
     build:
       local:
-        push: false
+        push: true
       artifacts:
-#        - image: oscka/java-demo-api
-        - image: java-demo-api
+        - image: oscka/java-demo-api
+#        - image: java-demo-api
           jib:
             args:
               - -DskipTests
