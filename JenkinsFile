@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'mvn'
+    }
+
+    stages {
+        stage('Git Clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/oscka/java-demo-api.git'
+            }
+        }
+        
+                
+        stage('maven-build') {
+            steps {
+                configFileProvider([configFile(fileId: 'nexus', variable: 'MVN_SETTINGS')]) {
+                	sh """
+                	    mvn -s $MVN_SETTINGS -DskipTests compile jib:build \
+                        -Dimage=192.168.41.50:5000/oscka/java-demo-api:0.0.9 \
+                        -Djib.to.auth.username=admin \
+                        -Djib.to.auth.password=osckorea! \
+                        -DallowInsecureRegistries=true \
+                        -DsendCredentialsOverHttp=true
+                	"""
+                	   
+                }
+            }
+        }
+    }
+}
